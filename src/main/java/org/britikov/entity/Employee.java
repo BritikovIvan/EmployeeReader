@@ -1,13 +1,13 @@
 package org.britikov.entity;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 public class Employee extends BaseEmployee {
     private Manager manager;
 
-    public Employee(long id, String name, EmployeePosition position, BigDecimal salary, Manager manager) {
+    public Employee(long id, String name, EmployeePosition position, BigDecimal salary) {
         super(id, name, position, salary);
-        this.manager = manager;
     }
 
     public Manager getManager() {
@@ -16,6 +16,21 @@ public class Employee extends BaseEmployee {
 
     public void setManager(Manager manager) {
         this.manager = manager;
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (!(o instanceof Employee employee)) return false;
+        if (!super.equals(o)) return false;
+
+        return Objects.equals(manager, employee.manager);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + Objects.hashCode(manager);
+        return result;
     }
 
     @Override

@@ -11,26 +11,12 @@ public class Company {
     public Company() {
     }
 
-    public Department addDepartment(Department department) {
-        if (departments.add(department)) {
-            for (Department existingDepartment : departments) {
-                if (existingDepartment.equals(department)) {
-                    return existingDepartment;
-                }
-            }
-        }
-        return department;
+    public void addDepartment(Department department) {
+        departments.add(department);
     }
 
-    public BaseEmployee addEmployee(BaseEmployee employee) {
-        if (!employees.add(employee)) {
-            for (BaseEmployee existingManager : employees) {
-                if (existingManager.equals(employee)) {
-                    return existingManager;
-                }
-            }
-        }
-        return employee;
+    public void addEmployee(BaseEmployee employee) {
+        employees.add(employee);
     }
 
     public Set<BaseEmployee> getDepartmentEmployees(Department department) {

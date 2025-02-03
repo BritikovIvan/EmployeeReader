@@ -1,6 +1,7 @@
 package org.britikov.entity;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 public abstract class BaseEmployee {
     private long id;
@@ -8,14 +9,14 @@ public abstract class BaseEmployee {
     private EmployeePosition position;
     private BigDecimal salary;
 
-    public BaseEmployee(long id, String name, EmployeePosition position, BigDecimal salary) {
+    protected BaseEmployee(long id, String name, EmployeePosition position, BigDecimal salary) {
         this.id = id;
         this.name = name;
         this.position = position;
         this.salary = salary;
     }
 
-    public BaseEmployee(long id) {
+    protected BaseEmployee(long id) {
         this.id = id;
     }
 
@@ -52,14 +53,18 @@ public abstract class BaseEmployee {
     }
 
     @Override
-    public final boolean equals(Object o) {
+    public boolean equals(Object o) {
         if (!(o instanceof BaseEmployee that)) return false;
 
-        return id == that.id;
+        return id == that.id && Objects.equals(name, that.name) && position == that.position && Objects.equals(salary, that.salary);
     }
 
     @Override
     public int hashCode() {
-        return Long.hashCode(id);
+        int result = Long.hashCode(id);
+        result = 31 * result + Objects.hashCode(name);
+        result = 31 * result + Objects.hashCode(position);
+        result = 31 * result + Objects.hashCode(salary);
+        return result;
     }
 }

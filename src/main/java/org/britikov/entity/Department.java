@@ -1,6 +1,7 @@
 package org.britikov.entity;
 
 import java.util.List;
+import java.util.Objects;
 
 public class Department {
     private String name;

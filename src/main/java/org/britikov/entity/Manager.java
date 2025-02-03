@@ -1,6 +1,7 @@
 package org.britikov.entity;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 public class Manager extends BaseEmployee {
     private Department department;
@@ -20,6 +21,21 @@ public class Manager extends BaseEmployee {
 
     public void setDepartment(Department department) {
         this.department = department;
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (!(o instanceof Manager manager)) return false;
+        if (!super.equals(o)) return false;
+
+        return Objects.equals(department, manager.department);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + Objects.hashCode(department);
+        return result;
     }
 
     @Override
