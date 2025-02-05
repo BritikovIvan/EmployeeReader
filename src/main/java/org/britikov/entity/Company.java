@@ -1,7 +1,9 @@
 package org.britikov.entity;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class Company {
@@ -13,6 +15,12 @@ public class Company {
 
     public void addDepartment(Department department) {
         departments.add(department);
+    }
+
+    public Optional<Department> getDepartmentByName(String departmentName) {
+        return departments.stream()
+                .filter(department -> department.getName().equals(departmentName))
+                .findFirst();
     }
 
     public void addEmployee(BaseEmployee employee) {

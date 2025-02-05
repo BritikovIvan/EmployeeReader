@@ -1,0 +1,10 @@
+Manager,1,Jane Smith,5000,HR
+Employee,101,John Doe ,3000,1
+Employee,102,Emily Johnson,1234,1
+Manager,  2,Michael Brown,6000   ,Sales
+Employee,103,Chris White,-2900,2
+Employee,104,Anna Taylor,3100,2
+     Employee,105,Robert Black,4321,8
+D, dsa, 1454, d
+Manager, 1, Greg Flo, 758, Sales
+Employee, 1, My Employee, 12348, 1
