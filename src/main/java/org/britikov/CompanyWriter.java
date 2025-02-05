@@ -41,9 +41,9 @@ public class CompanyWriter {
 
     private static void sortEmployees(List<Employee> employees, SortingType sortingType, boolean isAscending) {
         Comparator<Employee> comparator;
-        if (sortingType == SortingType.EMPLOYEE_NAME) {
+        if (sortingType == SortingType.NAME) {
             comparator = Comparator.comparing(Employee::getName);
-        } else if (sortingType == SortingType.EMPLOYEE_SALARY) {
+        } else if (sortingType == SortingType.SALARY) {
             comparator = Comparator.comparing(Employee::getSalary);
         } else {
             return;

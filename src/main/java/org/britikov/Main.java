@@ -8,7 +8,6 @@ import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
@@ -33,7 +32,9 @@ public class Main {
 
             Path path = getOutputFile(args);
             if (path != null) {
-
+                writeToFile(sb.toString(), path);
+            } else {
+                writeToConsole(sb.toString());
             }
 
         } catch (InvalidPathException e) {
@@ -107,7 +108,7 @@ public class Main {
         try {
             Files.writeString(filePath, output);
         } catch (IOException e) {
-            System.out.println("");
+            System.out.println("Error writing content to file. Please check the file path and restart the application.");
         }
     }
 }

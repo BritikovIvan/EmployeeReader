@@ -38,7 +38,9 @@ public class FileReader {
                 if (optionalManager.isEmpty()) {
                     employees.removeAll(entry.getValue());
                     entry.getValue()
-                            .forEach(employee -> fileReadingResult.addIncorrectData(employee.toString()));
+                            .forEach(employee -> {
+                                fileReadingResult.addIncorrectData(employee.toString() + ", " + entry.getKey());
+                            });
                     continue;
                 }
                 Manager manager = (Manager) optionalManager.get();
@@ -47,7 +49,12 @@ public class FileReader {
             }
 
             // TODO add check unique id
-            employees.forEach(company::addEmployee);
+            for (BaseEmployee employee : employees) {
+                boolean isDuplicate = company.addEmployee(employee);
+                if (isDuplicate) {
+                    fileReadingResult.addIncorrectData(employee.toString());
+                }
+            }
 
             return fileReadingResult;
         }
