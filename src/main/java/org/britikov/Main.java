@@ -22,6 +22,9 @@ public class Main {
             } else if (sortingType == null && isAscending != null) {
                 System.out.println("Error in the sorting parameters");
                 description = CompanyWriter.createCompanyDescription(fileReadingResult.getCompany());
+            } else if (sortingType != null) {
+                System.out.println("The sorting order is not set or is not set correctly, so the employees are sorted in ascending order.");
+                description = CompanyWriter.createCompanyDescription(fileReadingResult.getCompany(), sortingType, Boolean.TRUE);
             } else {
                 description = CompanyWriter.createCompanyDescription(fileReadingResult.getCompany());
             }
@@ -88,7 +91,7 @@ public class Main {
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
             if (arg.startsWith("--output=file") || arg.startsWith("-o=file")) {
-                if (args[i + 1].startsWith("--path=")) {
+                if (args.length > i + 1 && args[i + 1].startsWith("--path=")) {
                     String path = args[i + 1].substring(7);
                     return Paths.get(path);
                 } else {

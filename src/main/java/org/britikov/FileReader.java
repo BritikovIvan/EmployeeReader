@@ -36,24 +36,14 @@ public class FileReader {
                         .filter(e -> e.getId() == entry.getKey())
                         .findFirst();
                 if (optionalManager.isEmpty()) {
-                    employees.removeAll(entry.getValue());
+                    entry.getValue().forEach(company.getEmployees()::remove);
                     entry.getValue()
-                            .forEach(employee -> {
-                                fileReadingResult.addIncorrectData(employee.toString() + ", " + entry.getKey());
-                            });
+                            .forEach(employee -> fileReadingResult.addIncorrectData(employee.toString() + ", " + entry.getKey()));
                     continue;
                 }
                 Manager manager = (Manager) optionalManager.get();
                 entry.getValue().forEach(employee -> employee.setManager(manager));
                 manager.getDepartment().setEmployees(entry.getValue());
-            }
-
-            // TODO add check unique id
-            for (BaseEmployee employee : employees) {
-                boolean isDuplicate = company.addEmployee(employee);
-                if (isDuplicate) {
-                    fileReadingResult.addIncorrectData(employee.toString());
-                }
             }
 
             return fileReadingResult;
@@ -69,6 +59,10 @@ public class FileReader {
                     .toArray(String[]::new);
             EmployeePosition position = EmployeePosition.valueOf(employeeValues[0].toUpperCase());
             long id = Long.parseLong(employeeValues[1]);
+            Optional<BaseEmployee> optionalBaseEmployee = company.getEmployeeById(id);
+            if (optionalBaseEmployee.isPresent()) {
+                throw new DataParsingException("The employee id must be unique. This id is already in use.");
+            }
             String name = employeeValues[2];
             BigDecimal salary = new BigDecimal(employeeValues[3]);
             if (salary.compareTo(BigDecimal.ZERO) <= 0) {
@@ -77,14 +71,16 @@ public class FileReader {
             return switch (position) {
                 case MANAGER -> {
                     String departmentName = employeeValues[4];
+                    Manager manager = new Manager(id, name, EmployeePosition.MANAGER, salary);
                     Optional<Department> optionalDepartment = company.getDepartmentByName(departmentName);
                     Department department = optionalDepartment.orElseGet(() -> new Department(departmentName));
-                    Manager manager = new Manager(id, name, EmployeePosition.MANAGER, salary, department);
                     if (department.getManager() != null) {
                         throw new DataParsingException("The department already has a manager.");
                     }
                     department.setManager(manager);
+                    manager.setDepartment(department);
                     company.addDepartment(department);
+                    company.addEmployee(manager);
                     yield Optional.of(manager);
                 }
                 case EMPLOYEE -> {
@@ -96,6 +92,7 @@ public class FileReader {
                         managerEmployees.put(managerId, new ArrayList<>());
                         managerEmployees.get(managerId).add(employee);
                     }
+                    company.addEmployee(employee);
                     yield Optional.of(employee);
                 }
             };

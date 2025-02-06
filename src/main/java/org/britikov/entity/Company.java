@@ -23,13 +23,14 @@ public class Company {
                 .findFirst();
     }
 
-    public boolean addEmployee(BaseEmployee employee) {
-        if (employees.stream()
-                .map(BaseEmployee::getId)
-                .anyMatch(id -> id == employee.getId())) {
-            return false;
-        }
-        return employees.add(employee);
+    public Optional<BaseEmployee> getEmployeeById(long id) {
+        return employees.stream()
+                .filter(employee -> employee.getId() == id)
+                .findFirst();
+    }
+
+    public void addEmployee(BaseEmployee employee) {
+        employees.add(employee);
     }
 
     public Set<BaseEmployee> getDepartmentEmployees(Department department) {

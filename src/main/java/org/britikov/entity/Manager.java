@@ -6,9 +6,8 @@ import java.util.Objects;
 public class Manager extends BaseEmployee {
     private Department department;
 
-    public Manager(long id, String name, EmployeePosition position, BigDecimal salary, Department department) {
+    public Manager(long id, String name, EmployeePosition position, BigDecimal salary) {
         super(id, name, position, salary);
-        this.department = department;
     }
 
     public Manager(long id) {
