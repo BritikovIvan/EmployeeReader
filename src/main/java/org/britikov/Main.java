@@ -74,14 +74,6 @@ public class Main {
                 if (arg.equalsIgnoreCase("desc")) {
                     return false;
                 }
-            } else if (arg.contains("-o=")) {
-                arg = arg.substring(3);
-                if (arg.equalsIgnoreCase("asc")) {
-                    return true;
-                }
-                if (arg.equalsIgnoreCase("desc")) {
-                    return false;
-                }
             }
         }
         return null;
