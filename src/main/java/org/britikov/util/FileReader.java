@@ -18,22 +18,6 @@ public class FileReader {
 
     public static List<EmployeeDto> readData(String filePath) throws IOException {
         Path path = Paths.get(filePath);
-
-        //            for (Map.Entry<Long, List<Employee>> entry : managerEmployees.entrySet()) {
-//                Optional<BaseEmployee> optionalManager = employees.stream()
-//                        .filter(e -> e.getId() == entry.getKey())
-//                        .findFirst();
-//                if (optionalManager.isEmpty()) {
-//                    entry.getValue().forEach(company.getEmployees()::remove);
-//                    entry.getValue()
-//                            .forEach(employee -> fileReadingResult.addIncorrectData(employee.toString() + ", " + entry.getKey()));
-//                    continue;
-//                }
-//                Manager manager = (Manager) optionalManager.get();
-//                entry.getValue().forEach(employee -> employee.setManager(manager));
-//                manager.getDepartment().setEmployees(entry.getValue());
-//            }
-
         try (var lines = Files.lines(path)) {
             return lines
                     .map(FileReader::parseLine)
@@ -66,7 +50,7 @@ public class FileReader {
                     Manager manager = Manager.builder()
                             .id(id)
                             .name(employeeName)
-                            .position(Staff.MANAGER)
+                            .staff(Staff.MANAGER)
                             .salary(salary)
                             .department(department)
                             .build();
@@ -82,7 +66,7 @@ public class FileReader {
                     Employee employee = Employee.builder()
                             .id(id)
                             .name(employeeName)
-                            .position(Staff.EMPLOYEE)
+                            .staff(Staff.EMPLOYEE)
                             .salary(salary)
                             .manager(manager)
                             .build();

@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 public abstract class BaseEmployee {
     private long id;
     private String name;
-    private Staff position;
+    private Staff staff;
     private BigDecimal salary;
 
     protected BaseEmployee(long id) {

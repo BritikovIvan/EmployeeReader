@@ -11,10 +11,6 @@ public class Company {
     private final Set<Department> departments = new HashSet<>();
     private final Set<BaseEmployee> employees = new HashSet<>();
 
-    public Company() {
-        // TODO document why this method is empty
-    }
-
     public void addDepartment(Department department) {
         departments.add(department);
     }

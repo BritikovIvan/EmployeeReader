@@ -1,8 +1,10 @@
 package org.britikov;
 
 import org.britikov.dto.EmployeeDto;
+import org.britikov.dto.ValidationResult;
 import org.britikov.model.SortingType;
 import org.britikov.util.CompanyWriter;
+import org.britikov.util.EmployeeValidator;
 import org.britikov.util.FileReader;
 
 import java.io.IOException;
@@ -11,33 +13,38 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.logging.Logger;
 
 public class Main {
+    private static final Logger logger = Logger.getLogger(Main.class.getName());
+
     public static void main(String[] args) {
+        setLogger();
+
         try {
             // Get EmployeeDto from file
             List<EmployeeDto> employeeDtos = FileReader.readData(args[0]);
-
+            ValidationResult validationResult = EmployeeValidator.validateEmployees(employeeDtos);
 
             SortingType sortingType = getSortingType(args);
             Boolean isAscending = isAscendingOrder(args);
             String description;
 
             if (sortingType != null && isAscending != null) {
-                description = CompanyWriter.createCompanyDescription(fileReadingResult.getCompany(), sortingType, Boolean.TRUE.equals(isAscending));
+                description = CompanyWriter.createCompanyDescription(validationResult.getCompany(), sortingType, Boolean.TRUE.equals(isAscending));
             } else if (sortingType == null && isAscending != null) {
-                System.out.println("Error in the sorting parameters");
-                description = CompanyWriter.createCompanyDescription(fileReadingResult.getCompany());
+                logger.warning("Error in the sorting parameters");
+                description = CompanyWriter.createCompanyDescription(validationResult.getCompany());
             } else if (sortingType != null) {
-                System.out.println("The sorting order is not set or is not set correctly, so the employees are sorted in ascending order.");
-                description = CompanyWriter.createCompanyDescription(fileReadingResult.getCompany(), sortingType, Boolean.TRUE);
+                logger.warning("The sorting order is not set or is not set correctly, so the employees are sorted in ascending order.");
+                description = CompanyWriter.createCompanyDescription(validationResult.getCompany(), sortingType, Boolean.TRUE);
             } else {
-                description = CompanyWriter.createCompanyDescription(fileReadingResult.getCompany());
+                description = CompanyWriter.createCompanyDescription(validationResult.getCompany());
             }
 
             StringBuilder sb = new StringBuilder(description);
             sb.append("Некорректные данные:").append("\n");
-            fileReadingResult.getIncorrectData().forEach(s -> sb.append(s).append("\n"));
+            validationResult.getIncorrectData().forEach(s -> sb.append(s).append("\n"));
 
             Path path = getOutputFile(args);
             if (path != null) {
@@ -47,10 +54,14 @@ public class Main {
             }
 
         } catch (InvalidPathException e) {
-            System.out.println("Incorrect file path. Please restart the application with the correct file path.");
+            logger.warning("Incorrect file path. Please restart the application with the correct file path.");
         } catch (IOException e) {
-            System.out.println("Error reading the file content. Please check the file path or correctness of the file contents and restart the application.");
+            logger.warning("Error reading the file content. Please check the file path or correctness of the file contents and restart the application.");
         }
+    }
+
+    private static void setLogger() {
+        System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %5$s%n");
     }
 
     private static SortingType getSortingType(String[] args) {
@@ -65,7 +76,7 @@ public class Main {
                 }
             }
         } catch (IllegalArgumentException e) {
-            System.out.println("Incorrect sorting type value.");
+            logger.warning("Incorrect sorting type value.");
         }
         return null;
     }
@@ -93,7 +104,7 @@ public class Main {
                     String path = args[i + 1].substring(7);
                     return Paths.get(path);
                 } else {
-                    System.out.println("Error in the output parameters");
+                    logger.warning("Error in the output parameters");
                 }
                 break;
             }
@@ -109,7 +120,7 @@ public class Main {
         try {
             Files.writeString(filePath, output);
         } catch (IOException e) {
-            System.out.println("Error writing content to file. Please check the file path and restart the application.");
+            logger.warning("Error writing content to file. Please check the file path and restart the application.");
         }
     }
 }
