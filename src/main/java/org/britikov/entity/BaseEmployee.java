@@ -1,15 +1,17 @@
 package org.britikov.entity;
 
+import org.britikov.model.Staff;
+
 import java.math.BigDecimal;
 import java.util.Objects;
 
 public abstract class BaseEmployee {
     private long id;
     private String name;
-    private EmployeePosition position;
+    private Staff position;
     private BigDecimal salary;
 
-    protected BaseEmployee(long id, String name, EmployeePosition position, BigDecimal salary) {
+    protected BaseEmployee(long id, String name, Staff position, BigDecimal salary) {
         this.id = id;
         this.name = name;
         this.position = position;
@@ -36,11 +38,11 @@ public abstract class BaseEmployee {
         this.name = name;
     }
 
-    public EmployeePosition getPosition() {
+    public Staff getPosition() {
         return position;
     }
 
-    public void setPosition(EmployeePosition position) {
+    public void setPosition(Staff position) {
         this.position = position;
     }
 

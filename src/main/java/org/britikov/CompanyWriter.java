@@ -1,6 +1,7 @@
 package org.britikov;
 
 import org.britikov.entity.*;
+import org.britikov.model.SortingType;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

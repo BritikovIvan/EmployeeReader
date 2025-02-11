@@ -33,10 +33,6 @@ public class Company {
         employees.add(employee);
     }
 
-    public Set<BaseEmployee> getDepartmentEmployees(Department department) {
-        return employees.stream().filter(employee -> employee instanceof Employee).collect(Collectors.toSet());
-    }
-
     public Set<Department> getDepartments() {
         return departments;
     }

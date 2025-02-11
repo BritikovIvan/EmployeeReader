@@ -1,7 +1,7 @@
 package org.britikov;
 
 import org.britikov.entity.FileReadingResult;
-import org.britikov.entity.SortingType;
+import org.britikov.model.SortingType;
 
 import java.io.IOException;
 import java.nio.file.Files;

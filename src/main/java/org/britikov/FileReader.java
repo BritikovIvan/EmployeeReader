@@ -2,6 +2,7 @@ package org.britikov;
 
 import org.britikov.entity.*;
 import org.britikov.exception.DataParsingException;
+import org.britikov.model.Staff;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -23,8 +24,9 @@ public class FileReader {
             Company company = new Company();
             fileReadingResult.setCompany(company);
             Map<Long, List<Employee>> managerEmployees = new HashMap<>();
+
             List<Optional<BaseEmployee>> optionalEmployees = lines
-                    .map(s -> parsingLine(s, managerEmployees, fileReadingResult))
+                    .map(s -> parseLine(s, managerEmployees, fileReadingResult))
                     .toList();
             List<BaseEmployee> employees = new ArrayList<>(optionalEmployees.stream()
                     .filter(Optional::isPresent)
@@ -50,28 +52,34 @@ public class FileReader {
         }
     }
 
-    private static Optional<BaseEmployee> parsingLine(String line, Map<Long, List<Employee>> managerEmployees, FileReadingResult fileReadingResult) {
+    private static Optional<BaseEmployee> parseLine(String line, Map<Long, List<Employee>> managerEmployees, FileReadingResult fileReadingResult) {
         try {
             String[] employeeValues = line.split(",");
             Company company = fileReadingResult.getCompany();
+            // TODO trim values class or func
             employeeValues = Arrays.stream(employeeValues)
                     .map(String::trim)
                     .toArray(String[]::new);
-            EmployeePosition position = EmployeePosition.valueOf(employeeValues[0].toUpperCase());
+
+            Staff position = Staff.valueOf(employeeValues[0].toUpperCase());
+            // TODO parseValid ...
             long id = Long.parseLong(employeeValues[1]);
             Optional<BaseEmployee> optionalBaseEmployee = company.getEmployeeById(id);
             if (optionalBaseEmployee.isPresent()) {
                 throw new DataParsingException("The employee id must be unique. This id is already in use.");
             }
+            //
             String name = employeeValues[2];
             BigDecimal salary = new BigDecimal(employeeValues[3]);
+            // TODO Zero compareTo
             if (salary.compareTo(BigDecimal.ZERO) <= 0) {
                 throw new DataParsingException("The employee's salary must be more than 0.");
             }
+
             return switch (position) {
                 case MANAGER -> {
                     String departmentName = employeeValues[4];
-                    Manager manager = new Manager(id, name, EmployeePosition.MANAGER, salary);
+                    Manager manager = new Manager(id, name, Staff.MANAGER, salary);
                     Optional<Department> optionalDepartment = company.getDepartmentByName(departmentName);
                     Department department = optionalDepartment.orElseGet(() -> new Department(departmentName));
                     if (department.getManager() != null) {
@@ -85,12 +93,14 @@ public class FileReader {
                 }
                 case EMPLOYEE -> {
                     Long managerId = Long.parseLong(employeeValues[4]);
-                    Employee employee = new Employee(id, name, EmployeePosition.EMPLOYEE, salary);
+                    Employee employee = new Employee(id, name, Staff.EMPLOYEE, salary);
                     if (managerEmployees.containsKey(managerId)) {
-                        managerEmployees.get(managerId).add(employee);
+                        managerEmployees.get(managerId)
+                                .add(employee);
                     } else {
                         managerEmployees.put(managerId, new ArrayList<>());
-                        managerEmployees.get(managerId).add(employee);
+                        managerEmployees.get(managerId)
+                                .add(employee);
                     }
                     company.addEmployee(employee);
                     yield Optional.of(employee);

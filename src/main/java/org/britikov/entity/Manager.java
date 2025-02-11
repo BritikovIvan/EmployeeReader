@@ -1,12 +1,14 @@
 package org.britikov.entity;
 
+import org.britikov.model.Staff;
+
 import java.math.BigDecimal;
 import java.util.Objects;
 
 public class Manager extends BaseEmployee {
     private Department department;
 
-    public Manager(long id, String name, EmployeePosition position, BigDecimal salary) {
+    public Manager(long id, String name, Staff position, BigDecimal salary) {
         super(id, name, position, salary);
     }
 

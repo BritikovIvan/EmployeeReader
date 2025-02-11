@@ -1,4 +1,4 @@
-package org.britikov.entity;
+package org.britikov.model;
 
 public enum SortingType {
     NAME, SALARY
