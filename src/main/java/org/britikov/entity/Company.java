@@ -1,29 +1,31 @@
 package org.britikov.entity;
 
+import lombok.Getter;
+
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
+@Getter
 public class Company {
     private final Set<Department> departments = new HashSet<>();
     private final Set<BaseEmployee> employees = new HashSet<>();
 
     public Company() {
+        // TODO document why this method is empty
     }
 
     public void addDepartment(Department department) {
         departments.add(department);
     }
 
-    public Optional<Department> getDepartmentByName(String departmentName) {
+    public Optional<Department> findDepartmentByName(String departmentName) {
         return departments.stream()
                 .filter(department -> department.getName().equals(departmentName))
                 .findFirst();
     }
 
-    public Optional<BaseEmployee> getEmployeeById(long id) {
+    public Optional<BaseEmployee> findEmployeeById(long id) {
         return employees.stream()
                 .filter(employee -> employee.getId() == id)
                 .findFirst();
@@ -31,13 +33,5 @@ public class Company {
 
     public void addEmployee(BaseEmployee employee) {
         employees.add(employee);
-    }
-
-    public Set<Department> getDepartments() {
-        return departments;
-    }
-
-    public Set<BaseEmployee> getEmployees() {
-        return employees;
     }
 }

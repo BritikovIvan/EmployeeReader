@@ -1,18 +1,24 @@
 package org.britikov;
 
-import org.britikov.entity.FileReadingResult;
+import org.britikov.dto.EmployeeDto;
 import org.britikov.model.SortingType;
+import org.britikov.util.CompanyWriter;
+import org.britikov.util.FileReader;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
         try {
-            FileReadingResult fileReadingResult = FileReader.readData(args[0]);
+            // Get EmployeeDto from file
+            List<EmployeeDto> employeeDtos = FileReader.readData(args[0]);
+
+
             SortingType sortingType = getSortingType(args);
             Boolean isAscending = isAscendingOrder(args);
             String description;

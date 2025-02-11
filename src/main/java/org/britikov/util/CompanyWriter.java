@@ -1,4 +1,4 @@
-package org.britikov;
+package org.britikov.util;
 
 import org.britikov.entity.*;
 import org.britikov.model.SortingType;

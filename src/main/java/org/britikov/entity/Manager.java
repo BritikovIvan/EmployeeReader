@@ -1,42 +1,17 @@
 package org.britikov.entity;
 
-import org.britikov.model.Staff;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.SuperBuilder;
 
-import java.math.BigDecimal;
-import java.util.Objects;
-
+@Data
+@EqualsAndHashCode(callSuper = true)
+@SuperBuilder
 public class Manager extends BaseEmployee {
     private Department department;
 
-    public Manager(long id, String name, Staff position, BigDecimal salary) {
-        super(id, name, position, salary);
-    }
-
     public Manager(long id) {
         super(id);
-    }
-
-    public Department getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(Department department) {
-        this.department = department;
-    }
-
-    @Override
-    public final boolean equals(Object o) {
-        if (!(o instanceof Manager manager)) return false;
-        if (!super.equals(o)) return false;
-
-        return Objects.equals(department, manager.department);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + Objects.hashCode(department);
-        return result;
     }
 
     @Override
