@@ -13,6 +13,7 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 public class Main {
@@ -24,23 +25,12 @@ public class Main {
         try {
             // Get EmployeeDto from file
             List<EmployeeDto> employeeDtos = FileReader.readData(args[0]);
+            // Validate employees
             ValidationResult validationResult = EmployeeValidator.validateEmployees(employeeDtos);
-
-            SortingType sortingType = getSortingType(args);
-            Boolean isAscending = isAscendingOrder(args);
-            String description;
-
-            if (sortingType != null && isAscending != null) {
-                description = CompanyWriter.createCompanyDescription(validationResult.getCompany(), sortingType, Boolean.TRUE.equals(isAscending));
-            } else if (sortingType == null && isAscending != null) {
-                logger.warning("Error in the sorting parameters");
-                description = CompanyWriter.createCompanyDescription(validationResult.getCompany());
-            } else if (sortingType != null) {
-                logger.warning("The sorting order is not set or is not set correctly, so the employees are sorted in ascending order.");
-                description = CompanyWriter.createCompanyDescription(validationResult.getCompany(), sortingType, Boolean.TRUE);
-            } else {
-                description = CompanyWriter.createCompanyDescription(validationResult.getCompany());
-            }
+            // Get sortingType from args
+            Optional<SortingType> sortingType = getSortingType(args);
+            // Get departments description
+            String description = getDescription(sortingType, validationResult, args);
 
             StringBuilder sb = new StringBuilder(description);
             sb.append("Некорректные данные:").append("\n");
@@ -64,36 +54,57 @@ public class Main {
         System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %5$s%n");
     }
 
-    private static SortingType getSortingType(String[] args) {
+    private static Optional<SortingType> getSortingType(String[] args) {
         try {
             for (String arg : args) {
                 if (arg.startsWith("--sort=")) {
                     arg = arg.substring(7);
-                    return SortingType.valueOf(arg.toUpperCase());
+                    return Optional.of(SortingType.valueOf(arg.toUpperCase()));
                 } else if (arg.contains("-s=")) {
                     arg = arg.substring(3);
-                    return SortingType.valueOf(arg.toUpperCase());
+                    return Optional.of(SortingType.valueOf(arg.toUpperCase()));
                 }
             }
         } catch (IllegalArgumentException e) {
             logger.warning("Incorrect sorting type value.");
         }
-        return null;
+        return Optional.empty();
     }
 
-    private static Boolean isAscendingOrder(String[] args) {
+    private static boolean isAscendingOrder(String[] args) {
         for (String arg : args) {
             if (arg.startsWith("--order=")) {
                 arg = arg.substring(8);
                 if (arg.equalsIgnoreCase("asc")) {
                     return true;
-                }
-                if (arg.equalsIgnoreCase("desc")) {
+                } else if (arg.equalsIgnoreCase("desc")) {
                     return false;
                 }
             }
         }
-        return null;
+        throw new IllegalArgumentException("The sorting order is not set or is not set correctly, so the employees are sorted in ascending order.");
+    }
+
+    private static String getDescription(Optional<SortingType> optionalSortingType, ValidationResult validationResult, String[] args) {
+        String description;
+        try {
+            boolean isAscending = isAscendingOrder(args);
+            if (optionalSortingType.isPresent()) {
+                description = CompanyWriter.createCompanyDescription(validationResult.getCompany(), optionalSortingType.get(), isAscending);
+            } else {
+                logger.warning("Error in the sorting parameters");
+                description = CompanyWriter.createCompanyDescription(validationResult.getCompany());
+            }
+        } catch (IllegalArgumentException e) {
+            if (optionalSortingType.isPresent()) {
+                logger.warning(e.getMessage());
+                description = CompanyWriter.createCompanyDescription(validationResult.getCompany(), optionalSortingType.get(), true);
+            } else {
+                logger.warning("Error in the sorting parameters");
+                description = CompanyWriter.createCompanyDescription(validationResult.getCompany());
+            }
+        }
+        return description;
     }
 
     private static Path getOutputFile(String[] args) {
