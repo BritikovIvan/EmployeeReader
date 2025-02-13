@@ -1,7 +1,8 @@
 package org.britikov.util;
 
 import org.britikov.entity.*;
-import org.britikov.model.SortingType;
+import org.britikov.model.SortOrder;
+import org.britikov.model.SortType;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -9,9 +10,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class CompanyWriter {
+public class CompanyStringBuilder {
 
-    private CompanyWriter() {}
+    private CompanyStringBuilder() {}
 
     public static String createCompanyDescription(Company company) {
         List<Department> departments = new ArrayList<>(company.getDepartments());
@@ -33,24 +34,24 @@ public class CompanyWriter {
         return sb.toString();
     }
 
-    public static String createCompanyDescription(Company company, SortingType sortingType, boolean isAscending) {
+    public static String createCompanyDescription(Company company, SortType sortType, SortOrder sortOrder) {
         company.getDepartments().stream()
                 .map(Department::getEmployees)
-                .forEach(employees -> sortEmployees(employees, sortingType, isAscending));
+                .forEach(employees -> sortEmployees(employees, sortType, sortOrder));
         return createCompanyDescription(company);
     }
 
-    private static void sortEmployees(List<Employee> employees, SortingType sortingType, boolean isAscending) {
+    private static void sortEmployees(List<Employee> employees, SortType sortType, SortOrder sortOrder) {
         Comparator<Employee> comparator;
-        if (sortingType == SortingType.NAME) {
+        if (sortType == SortType.NAME) {
             comparator = Comparator.comparing(Employee::getName);
-        } else if (sortingType == SortingType.SALARY) {
+        } else if (sortType == SortType.SALARY) {
             comparator = Comparator.comparing(Employee::getSalary);
         } else {
             return;
         }
 
-        if (!isAscending) {
+        if (sortOrder == SortOrder.DESC) {
             comparator = comparator.reversed();
         }
         employees.sort(comparator);

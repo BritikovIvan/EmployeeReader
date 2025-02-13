@@ -1,5 +1,5 @@
 package org.britikov.model;
 
-public enum SortingType {
+public enum SortType {
     NAME, SALARY
 }
